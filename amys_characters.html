@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Amy's Character Generator</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+:root{
+  --bg:#eaf4ff;
+  --card:#ffffff;
+  --ink:#111827;
+  --muted:#5b6475;
+  --brand:#3b82f6;
+  --brand-dark:#2563eb;
+  --soft:#f0f7ff;
+  --line:#d9deea;
+}
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:var(--bg);
+  padding:30px;
+}
+.container{
+  max-width:900px;
+  margin:auto;
+  background:white;
+  padding:30px;
+  border-radius:18px;
+}
+h1{
+  margin:0 0 10px;
+  font-size:40px;
+}
+p{
+  color:var(--muted);
+}
+.controls{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:10px;
+  margin:20px 0;
+}
+select{
+  padding:12px;
+  border-radius:10px;
+  border:1px solid var(--line);
+}
+button{
+  padding:14px 20px;
+  border:none;
+  border-radius:10px;
+  background:var(--brand);
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+}
+button:hover{
+  background:var(--brand-dark);
+}
+.output{
+  margin-top:20px;
+  background:var(--soft);
+  padding:20px;
+  border-radius:15px;
+}
+.footer{
+  margin-top:30px;
+  text-align:center;
+}
+.footer a{
+  color:var(--brand);
+  font-weight:bold;
+  text-decoration:none;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+  <h1>Amy's Character Generator</h1>
+  <p>Build a character with personality traits, flaws, a backstory, and goals.</p>
+
+  <p><a href="https://studentandwriter.com/category/characterization/" target="_blank">Explore more characterization ideas here</a></p>
+
+  <div class="controls">
+    <select>
+      <option>Surprise me</option>
+      <option>Romance</option>
+      <option>Fantasy</option>
+      <option>Mystery</option>
+    </select>
+
+    <select>
+      <option>Teen</option>
+      <option>Adult</option>
+    </select>
+
+    <select>
+      <option>Balanced</option>
+      <option>Novel-ready</option>
+    </select>
+  </div>
+
+  <button onclick="generate()">Generate Character</button>
+
+  <div id="output" class="output"></div>
+
+  <div class="footer">
+    <a href="https://studentandwriter.com/" target="_blank">studentandwriter.com</a>
+  </div>
+</div>
+
+<script>
+const traits=["curious","sarcastic","loyal","quiet","bold"];
+const flaws=["avoids conflict","lies","fears failure"];
+const goals=["prove themselves","find truth","protect someone"];
+const backstories=["lost something important","grew up overlooked","made a big mistake"];
+
+function pick(arr){
+ return arr[Math.floor(Math.random()*arr.length)];
+}
+
+function generate(){
+ document.getElementById("output").innerText =
+ "A " + pick(traits) + " character who " + pick(flaws) +
+ ", wants to " + pick(goals) +
+ ", and " + pick(backstories) + ".";
+}
+</script>
+
+</body>
+</html>
