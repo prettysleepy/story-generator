@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Epic Story Idea Generator</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f5f7fb;
+  padding: 40px;
+  text-align: center;
+}
+.container {
+  max-width: 700px;
+  margin: auto;
+  background: white;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+h1 {
+  margin-bottom: 10px;
+}
+button {
+  padding: 14px 20px;
+  border: none;
+  border-radius: 10px;
+  background: #4a6cf7;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+button:hover {
+  background: #3a56d4;
+}
+.output {
+  margin-top: 30px;
+  font-size: 20px;
+  line-height: 1.6;
+  font-weight: bold;
+}
+.small {
+  font-size: 14px;
+  color: #666;
+  margin-top: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h1>⚡ Epic Story Idea Generator</h1>
+  <p>Create powerful story ideas in one click.</p>
+
+  <button onclick="generate()">Generate Idea</button>
+  <button onclick="twistOnly()">New Twist</button>
+
+  <div class="output" id="output"></div>
+  <div class="small">Tip: Use this for essays, short stories, or novels.</div>
+</div>
+
+<script>
+const protagonists = [
+  "a struggling student hiding a dangerous secret",
+  "a gifted writer who can rewrite reality",
+  "a quiet outcast who discovers hidden power",
+  "a perfectionist who starts breaking the rules",
+  "a teenager who can hear other people's thoughts",
+  "a failed inventor desperate to prove themselves"
+];
+
+const goals = [
+  "must uncover the truth",
+  "is forced to make an impossible choice",
+  "tries to fix a mistake that keeps getting worse",
+  "sets out to prove something everyone doubts",
+  "must save someone before time runs out"
+];
+
+const settings = [
+  "in a world where memories can be erased",
+  "inside a school that hides something sinister",
+  "in a future controlled by algorithms",
+  "in a small town where nothing is what it seems",
+  "inside a digital world that feels too real",
+  "in a society where failure is punished"
+];
+
+const conflicts = [
+  "but every decision has unexpected consequences",
+  "while someone is secretly working against them",
+  "as reality begins to break apart",
+  "while their closest ally may betray them",
+  "as they realize they might be the villain"
+];
+
+const twists = [
+  "and the truth changes everything they believed",
+  "but the problem was created by them all along",
+  "and the ending depends on one final sacrifice",
+  "but nothing they remember is real",
+  "and someone else is controlling the story",
+  "but winning means losing something important"
+];
+
+let lastBase = "";
+
+function pick(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function generate() {
+  const p = pick(protagonists);
+  const g = pick(goals);
+  const s = pick(settings);
+  const c = pick(conflicts);
+  const t = pick(twists);
+
+  lastBase = `Write a story about ${p} who ${g} ${s}, ${c}`;
+  document.getElementById("output").innerText = lastBase + ", " + t + ".";
+}
+
+function twistOnly() {
+  if (!lastBase) {
+    generate();
+    return;
+  }
+  const t = pick(twists);
+  document.getElementById("output").innerText = lastBase + ", " + t + ".";
+}
+
+generate();
+</script>
+
+</body>
+</html>
