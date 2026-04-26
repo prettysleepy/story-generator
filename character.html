@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Character Generator for Writers</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+:root {
+  --bg: #f5f7fb;
+  --card: #ffffff;
+  --ink: #101828;
+  --muted: #667085;
+  --brand: #4a6cf7;
+  --brand-dark: #3a56d4;
+  --soft: #eef2ff;
+  --line: #d9deea;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: radial-gradient(circle at top left, #eef2ff 0, #f5f7fb 36%, #ffffff 100%);
+  color: var(--ink);
+  padding: 30px 16px;
+}
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  background: var(--card);
+  padding: 34px;
+  border-radius: 22px;
+  box-shadow: 0 14px 40px rgba(16, 24, 40, 0.10);
+}
+h1 {
+  margin: 0 0 10px;
+  font-size: clamp(34px, 5vw, 56px);
+  line-height: 1.05;
+}
+.lede {
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1.55;
+  margin-bottom: 24px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+label {
+  display: block;
+  font-weight: bold;
+  margin: 14px 0 8px;
+}
+input, select {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  font-size: 16px;
+  background: white;
+}
+.buttons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 22px;
+}
+button {
+  padding: 14px 18px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--brand);
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+button:hover { background: var(--brand-dark); }
+button.secondary {
+  background: #e9ecf5;
+  color: var(--ink);
+}
+.output {
+  margin-top: 28px;
+  background: var(--soft);
+  border-radius: 18px;
+  padding: 24px;
+  text-align: left;
+  line-height: 1.6;
+}
+.output h2 {
+  margin: 0 0 12px;
+  font-size: 28px;
+}
+.output h3 {
+  margin: 22px 0 6px;
+  font-size: 19px;
+}
+.output p {
+  margin: 0 0 10px;
+  font-size: 17px;
+}
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0 8px;
+}
+.badge {
+  background: white;
+  border: 1px solid #dbe3ff;
+  color: #26336b;
+  padding: 7px 10px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: bold;
+}
+.tip {
+  margin-top: 18px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.footer-link {
+  display: inline-block;
+  margin-top: 18px;
+  color: var(--brand);
+  text-decoration: none;
+  font-weight: bold;
+}
+@media (max-width: 700px) {
+  .container { padding: 24px; }
+  .grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+  <h1>Character Generator</h1>
+  <p class="lede">Build a fuller character with a role, personality traits, a flaw, a backstory, a goal, and a story problem. Great for short stories, novels, roleplay, or creative writing assignments.</p>
+
+  <div class="grid">
+    <div>
+      <label for="genre">Genre</label>
+      <select id="genre">
+        <option value="any">Surprise me</option>
+        <option value="realistic">Realistic Fiction</option>
+        <option value="fantasy">Fantasy</option>
+        <option value="mystery">Mystery</option>
+        <option value="scifi">Science Fiction</option>
+        <option value="romance">Romance</option>
+        <option value="adventure">Adventure</option>
+        <option value="dark">Dark / Dramatic</option>
+        <option value="funny">Funny</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="age">Character age</label>
+      <select id="age">
+        <option value="any">Surprise me</option>
+        <option value="teen">Teen</option>
+        <option value="young adult">Young adult</option>
+        <option value="adult">Adult</option>
+        <option value="older adult">Older adult</option>
+      </select>
+    </div>
+  </div>
+
+  <label for="seed">Optional idea, trait, job, or name</label>
+  <input id="seed" placeholder="Example: shy artist, retired detective, Maya, dragon trainer">
+
+  <div class="buttons">
+    <button onclick="generateCharacter()">Generate Character</button>
+    <button class="secondary" onclick="rerollProblem()">New Problem Only</button>
+    <button class="secondary" onclick="copyCharacter()">Copy Character</button>
+  </div>
+
+  <div id="output" class="output">Your character will appear here.</div>
+
+  <p class="tip">This generator does not use AI. It combines curated character-building pieces, writing templates, and your optional input to create a detailed character starter.</p>
+  <a class="footer-link" href="https://studentandwriter.com/" target="_blank" rel="noopener">Student & Writer</a>
+</div>
+
+<script>
+const names = [
+  "Avery", "Maya", "Jonah", "Elena", "Theo", "Nina", "Rowan", "Cassia", "Miles", "Iris",
+  "Leah", "Noah", "Tessa", "Finn", "Clara", "Jude", "Sage", "Milo", "Riley", "June",
+  "Eli", "Amara", "Mae", "Ezra", "Lena", "Nico", "Harper", "Wren", "Sofia", "Callum"
+];
+
+const roles = {
+  realistic: ["student", "new neighbor", "part-time cashier", "older sibling", "journalist", "teacher's assistant", "artist", "athlete", "family peacemaker", "quiet observer"],
+  fantasy: ["apprentice healer", "runaway royal", "mapmaker", "dragon keeper", "village messenger", "cursed gardener", "spell collector", "guard in training", "forest guide", "reluctant chosen one"],
+  mystery: ["amateur detective", "witness", "private tutor", "librarian", "reporter", "neighbor with secrets", "forensic intern", "retired investigator", "student journalist", "missing person's friend"],
+  scifi: ["space mechanic", "memory archivist", "robot repair student", "colony scout", "time travel assistant", "algorithm tester", "future historian", "bio-dome gardener", "pilot trainee", "AI ethics student"],
+  romance: ["bookstore worker", "wedding photographer", "rival student", "coffee shop regular", "neighbor", "letter writer", "musician", "baker", "best friend", "new coworker"],
+  adventure: ["treasure hunter", "survival student", "lost traveler", "expedition guide", "cartographer", "storm chaser", "runaway", "camp counselor", "message carrier", "reluctant hero"],
+  dark: ["haunted student", "grief-stricken artist", "secret keeper", "night-shift worker", "fallen hero", "lonely caretaker", "disgraced detective", "witness to something terrible", "person with a missing past", "keeper of a dangerous promise"],
+  funny: ["overconfident inventor", "dramatic class president", "failed magician", "chaotic babysitter", "pet psychic", "accidental villain", "clumsy spy", "bad advice columnist", "amateur ghost hunter", "teacher's pet with a secret"]
+};
+
+const traits = [
+  "curious", "stubborn", "kind-hearted", "restless", "observant", "witty", "loyal", "impatient",
+  "brave", "careful", "dramatic", "quiet", "clever", "protective", "idealistic", "skeptical",
+  "resourceful", "secretive", "gentle", "bold", "awkward", "ambitious", "thoughtful", "competitive",
+  "sensitive", "funny", "serious", "hopeful", "practical", "intense"
+];
+
+const flaws = [
+  "trusts the wrong people",
+  "avoids asking for help",
+  "lies to seem stronger than they are",
+  "runs from hard conversations",
+  "needs to be right",
+  "keeps secrets even when honesty would help",
+  "acts brave but panics when alone",
+  "judges people too quickly",
+  "overthinks every choice",
+  "takes responsibility for things that are not their fault",
+  "pushes people away before they can leave",
+  "uses jokes to avoid being honest",
+  "wants approval too badly",
+  "refuses to forgive themselves",
+  "mistakes control for safety"
+];
+
+const backstories = [
+  "grew up feeling responsible for everyone else",
+  "lost something important and never fully talked about it",
+  "moved so often that they learned not to get attached",
+  "was once praised for being perfect and now fears failure",
+  "made one mistake that changed how people saw them",
+  "comes from a family with a secret no one explains",
+  "spent years pretending not to care",
+  "learned early that silence was safer than telling the truth",
+  "was underestimated for so long that they stopped correcting people",
+  "keeps a reminder of someone they miss",
+  "built their whole identity around one talent",
+  "has always felt like the extra person in the room",
+  "was raised by someone who taught them survival, not softness",
+  "once had a chance to speak up and did not take it",
+  "has a reputation that does not match who they really are"
+];
+
+const goals = [
+  "prove they are capable",
+  "protect someone they love",
+  "find out the truth",
+  "escape a life that feels too small",
+  "fix a mistake before it ruins everything",
+  "be seen for who they really are",
+  "win back trust",
+  "solve a mystery everyone else ignores",
+  "make one brave choice",
+  "start over without losing themselves",
+  "stop pretending",
+  "find a place where they belong",
+  "keep a dangerous promise",
+  "beat someone who always seems one step ahead",
+  "turn their weakness into a strength"
+];
+
+const fears = [
+  "being forgotten",
+  "becoming like the person who hurt them",
+  "failing in public",
+  "being trapped",
+  "telling the truth and losing everything",
+  "needing someone",
+  "being ordinary",
+  "making the same mistake twice",
+  "being chosen for the wrong reason",
+  "learning that their memories are wrong"
+];
+
+const secrets = [
+  "They know more than they admit.",
+  "They are protecting someone who may not deserve it.",
+  "They once caused the problem they are trying to solve.",
+  "They have a hidden talent they are afraid to use.",
+  "They are using a false name.",
+  "They received a warning and ignored it.",
+  "They are connected to the villain in a way no one expects.",
+  "They have already failed once.",
+  "They are searching for someone, but pretend they are not.",
+  "They carry proof that could change everything."
+];
+
+const problems = [
+  "A stranger arrives with a message that only makes sense to them.",
+  "Someone accuses them of something they did not do.",
+  "They find an object that should not exist.",
+  "A friend asks for help and then disappears.",
+  "Their biggest secret is almost exposed.",
+  "They are forced to work with the one person they do not trust.",
+  "A rule they have always followed suddenly puts someone in danger.",
+  "They discover that the person they admire has been lying.",
+  "They have one day to make a choice that will change their future.",
+  "The thing they wanted most turns out to be the worst possible thing for them."
+];
+
+const appearances = [
+  "always looks a little like they just ran somewhere",
+  "has watchful eyes and a habit of noticing exits",
+  "dresses neatly, even when everything else is falling apart",
+  "wears one old item they refuse to replace",
+  "has ink, paint, grease, or dust on their hands",
+  "moves quietly, as if trying not to take up too much space",
+  "has a smile that appears before they are ready to mean it",
+  "looks confident until someone pays close attention",
+  "keeps their hair, clothes, or bag slightly messy",
+  "has a calm face and very nervous hands"
+];
+
+const habits = [
+  "taps their fingers when thinking",
+  "collects small objects from important days",
+  "answers questions with questions",
+  "writes notes they never show anyone",
+  "notices tiny details other people miss",
+  "rehearses conversations before having them",
+  "makes jokes at the worst possible time",
+  "keeps emergency snacks, tools, or notes in every bag",
+  "avoids sitting with their back to a door",
+  "hums when they are scared"
+];
+
+let lastCharacter = {};
+let lastProblem = "";
+
+function pick(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function chooseRole(genre) {
+  if (genre === "any") {
+    const keys = Object.keys(roles);
+    genre = pick(keys);
+  }
+  return pick(roles[genre]);
+}
+
+function titleCase(text) {
+  return text.replace(/\w\S*/g, function(word) {
+    return word.charAt(0).toUpperCase() + word.substr(1).toLowerCase();
+  });
+}
+
+function generateCharacter() {
+  const genre = document.getElementById("genre").value;
+  const ageChoice = document.getElementById("age").value;
+  const seed = document.getElementById("seed").value.trim();
+
+  const name = seed && seed.split(" ").length === 1 ? seed : pick(names);
+  const role = seed && seed.split(" ").length > 1 ? seed : chooseRole(genre);
+  const age = ageChoice === "any" ? pick(["teen", "young adult", "adult", "older adult"]) : ageChoice;
+  const trait1 = pick(traits);
+  let trait2 = pick(traits);
+  while (trait2 === trait1) trait2 = pick(traits);
+
+  lastProblem = pick(problems);
+
+  lastCharacter = {
+    name,
+    role,
+    age,
+    trait1,
+    trait2,
+    flaw: pick(flaws),
+    backstory: pick(backstories),
+    goal: pick(goals),
+    fear: pick(fears),
+    secret: pick(secrets),
+    appearance: pick(appearances),
+    habit: pick(habits),
+    problem: lastProblem
+  };
+
+  renderCharacter();
+}
+
+function rerollProblem() {
+  if (!lastCharacter.name) {
+    generateCharacter();
+    return;
+  }
+  lastCharacter.problem = pick(problems);
+  renderCharacter();
+}
+
+function renderCharacter() {
+  const c = lastCharacter;
+  const html = `
+    <h2>${titleCase(c.name)}</h2>
+    <div class="badges">
+      <span class="badge">${c.age}</span>
+      <span class="badge">${c.role}</span>
+      <span class="badge">${c.trait1}</span>
+      <span class="badge">${c.trait2}</span>
+    </div>
+
+    <h3>Quick Character Sketch</h3>
+    <p>${c.name} is a ${c.age} ${c.role} who seems ${c.trait1} and ${c.trait2}, but underneath that, they are struggling with a flaw: they ${c.flaw}.</p>
+
+    <h3>Backstory</h3>
+    <p>${c.name} ${c.backstory}. This still affects the way they speak, trust people, and make decisions.</p>
+
+    <h3>Goal</h3>
+    <p>More than anything, ${c.name} wants to ${c.goal}.</p>
+
+    <h3>Fear</h3>
+    <p>The thing they do not want to admit is that they are afraid of ${c.fear}.</p>
+
+    <h3>Secret</h3>
+    <p>${c.secret}</p>
+
+    <h3>Appearance and Habit</h3>
+    <p>${c.name} ${c.appearance} and often ${c.habit}.</p>
+
+    <h3>Story Problem</h3>
+    <p>${c.problem}</p>
+
+    <h3>Writing Prompt</h3>
+    <p>Write a scene where ${c.name}, a ${c.role}, has to choose between hiding their flaw and chasing their goal. Make the choice harder by bringing their secret into the open.</p>
+  `;
+  document.getElementById("output").innerHTML = html;
+}
+
+function copyCharacter() {
+  const text = document.getElementById("output").innerText;
+  navigator.clipboard.writeText(text);
+}
+
+generateCharacter();
+</script>
+</body>
+</html>
